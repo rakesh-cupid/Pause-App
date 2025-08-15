@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pause — 4‑Step</title>
+<style>
+  :root{--bg:#0c0f12;--ink:#e8f0fe;--muted:#9fb0c8;--card:#141a20;--edge:#273244}
+  *{box-sizing:border-box} html,body{height:100%;margin:0}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;background:radial-gradient(1200px 800px at 50% -10%,#1b2430 0%,var(--bg) 50%);color:var(--ink)}
+  main{max-width:480px;margin:24px auto;padding:16px}
+  h1{margin:8px 0 4px;text-align:center;letter-spacing:.06em;font-weight:700;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+  button{
+    background:var(--card);color:var(--ink);border:1px solid var(--edge);
+    border-radius:14px;padding:22px 16px;font-size:18px;font-weight:600;letter-spacing:.01em;
+    transition:transform .08s ease, background .18s ease, border-color .18s ease;
+    touch-action:manipulation
+  }
+  button:active{transform:scale(.98)}
+  #coach{margin-top:12px;padding:16px;border:1px solid var(--edge);border-radius:12px;background:#10161c;min-height:64px;color:#cfe0ff}
+  .bar{height:4px;background:linear-gradient(90deg,#7aa6ff,#9b8cff);border-radius:999px;margin:10px 0;transform-origin:left center;transform:scaleX(var(--p,0))}
+  footer{opacity:.7;font-size:12px;text-align:center;margin-top:14px;color:#b5c2d6}
+</style>
+</head>
+<body>
+<main>
+  <h1>Pause</h1>
+  <div class="grid">
+    <button data-step="Imagine">Imagine</button>
+    <button data-step="Recall">Recall</button>
+    <button data-step="Breathe">Breathe</button>
+    <button data-step="Ssshh">Ssshh</button>
+  </div>
+  <div class="bar" id="bar"></div>
+  <p id="coach">Tap a step. Tiny pause, big shift.</p>
+  <footer>Tip: Add to Home Screen for app‑like feel.</footer>
+</main>
+
+<script>
+const coach=document.getElementById('coach');
+const bar=document.getElementById('bar');
+const lines={
+  Imagine:"Notice the idea forming. No rush. Just see it.",
+  Recall:"Touch one real moment from today. Let it settle.",
+  Breathe:"Feel the inhale… feel the exhale. That’s your only clock.",
+  Ssshh:"Let the background quiet show itself. Nothing to do."
+};
+const order=["Imagine","Recall","Breathe","Ssshh"]; let progress=0;
+function setCoach(step){
+  coach.textContent=lines[step];
+  localStorage.setItem('lastStep',step);
+  progress=Math.max(progress,order.indexOf(step)+1);
+  bar.style.setProperty('--p',progress/order.length);
+  if(navigator.vibrate) navigator.vibrate(8);
+}
+document.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>setCoach(b.dataset.step)));
+const last=localStorage.getItem('lastStep'); if(last&&lines[last]) setCoach(last);
+document.querySelector('button[data-step="Breathe"]').addEventListener('dblclick',()=>setCoach('Ssshh'));
+</script>
+</body>
+</html>
